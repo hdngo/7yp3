@@ -42,10 +42,12 @@ const canvas = document.querySelector('canvas')
 
 // Fonts
 const fontLoader = new THREE.FontLoader()
+let textFont = null
 let textColor = debugObject.welcomeTextColor
 fontLoader.load(
     '/fonts/helvetiker_regular.typeface.json',
     (font) => {
+        textFont = font
         const welcomeTextGeometry = new THREE.TextBufferGeometry(
             'QW3R7Y',
             {
@@ -62,6 +64,7 @@ fontLoader.load(
         )
 
         welcomeTextGeometry.center()
+        // welcomeTextGeometry.computeBoundingBox()
 
         const welcomeTextMaterial = new THREE.MeshBasicMaterial({
             color: debugObject.welcomeTextColor
@@ -69,17 +72,41 @@ fontLoader.load(
 
         const welcomeText = new THREE.Mesh(welcomeTextGeometry, welcomeTextMaterial)
         scene.add(welcomeText)
-
-        updateAllMaterials()
+        welcomeText.lookAt(camera.position)
     }
 )
+
+const createText = (string) => {
+    console.log(textFont)
+    const textGeo = new THREE.TextBufferGeometry(
+        string,
+        {
+            font: textFont,
+            size: 0.5,
+            height: 0.02,
+            curveSegments: 3,
+            bevelEnabled: true,
+            bevelThickness: 0.25,
+            bevelSize: 0.03,
+            bevelOffset: 0,
+            bevelSegments: 3
+        }
+    )
+
+    const textMat = new THREE.MeshBasicMaterial({
+        color: debugObject.welcomeTextColor
+    })
+
+    const text = new THREE.Mesh(textGeo, textMat)
+    // scene.add(text)
+    return text
+}
 
 /**
  * Update all materials
  */
 const updateAllMaterials = () => {
     scene.traverse((child) => {
-        // if (child instanceof THREE.TextBufferGeometry) {
         if (child instanceof THREE.Mesh && child.geometry instanceof THREE.TextGeometry) {
             console.log(child)
             child.material.needsUpdate = true
@@ -177,3 +204,8 @@ const tick = () => {
 }
 
 tick()
+
+setTimeout(() => {
+    const asdf = createText('asdf')
+    scene.add(asdf)
+}, 1500)
