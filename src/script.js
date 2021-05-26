@@ -6,6 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 console.log('starter kit')
 console.log(dat)
 console.log(THREE)
+console.log('test')
 
 /**
  * Debug
